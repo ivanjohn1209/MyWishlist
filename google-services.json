@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "65172770811",
+    "firebase_url": "https://mywishlistapp-ab73a.firebaseio.com",
+    "project_id": "mywishlistapp-ab73a",
+    "storage_bucket": "mywishlistapp-ab73a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:65172770811:android:fb04e6728ca95f5576455e",
+        "android_client_info": {
+          "package_name": "com.codevision.mywishlist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "65172770811-b2au0vdjc7e9udvmpb7f526bj5okkgpg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqTzaShEoRjvX1P9h4lscKcPuoI2SfLZo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "65172770811-b2au0vdjc7e9udvmpb7f526bj5okkgpg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
