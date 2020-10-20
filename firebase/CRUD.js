@@ -13,6 +13,7 @@ export {
   getFriend,
   getEvents,
   GetNotFriendUsers,
+  getWishlist,
 };
 
 function CreateUser(email, password) {
@@ -119,7 +120,8 @@ function CreateEvent(
   event_title,
   event_start_date,
   event_end_date,
-  attendees_invited
+  attendees_invited,
+  wishlist
 ) {
   var db = firebase.firestore();
   var user = firebase.auth().currentUser;
@@ -135,6 +137,7 @@ function CreateEvent(
             event_end_date: event_end_date,
             user_creator: doc.data(),
             event_attendees: attendees_invited,
+            event_wishlist: wishlist,
           };
           var db = firebase.firestore();
           db.collection("events")
@@ -236,6 +239,27 @@ function getEvents() {
           events.push(doc.data());
         });
         return events;
+      });
+  }
+}
+function getWishlist() {
+  var db = firebase.firestore();
+  var user = firebase.auth().currentUser;
+  if (user != null) {
+    const wish_list = [];
+    return db
+      .collection("users")
+      .doc(user.uid)
+      .collection("wish_list")
+      .get()
+      .then((data) => {
+        data.forEach((doc) => {
+          wish_list.push(doc.data());
+        });
+        return wish_list;
+      })
+      .catch((error) => {
+        alert(error);
       });
   }
 }

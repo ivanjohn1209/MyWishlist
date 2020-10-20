@@ -39,83 +39,11 @@ import { YellowBox } from "react-native";
 YellowBox.ignoreWarnings(["Setting a timer"]);
 import * as firebase from "firebase";
 import "firebase/firestore";
-import { getFriend, getEvents } from "../firebase/CRUD";
+import { getFriend, getEvents, getWishlist } from "../firebase/CRUD";
 export default class EventScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      calls: [
-        {
-          id: 1,
-          name: "Mark Doe",
-          status: "active",
-          image:
-            "https://www.hashatit.com/images/uploads/users/74336/profile_picture/189315459.jpg",
-        },
-        {
-          id: 2,
-          name: "Clark Man",
-          status: "active",
-          image:
-            "https://us.123rf.com/450wm/fizkes/fizkes1904/fizkes190400933/121256725-head-shot-portrait-of-smiling-middle-aged-businessman-sitting-at-work-desk-looking-in-camera-success.jpg?ver=6",
-        },
-        {
-          id: 3,
-          name: "Jaden Boor",
-          status: "active",
-          image:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT2BaFDz6mMNbafjmCKlKbHosJDTkBoXVbXwg&usqp=CAU",
-        },
-        {
-          id: 4,
-          name: "Srick Tree",
-          status: "active",
-          image:
-            "https://pbs.twimg.com/profile_images/901536975676723200/tx7cwcdZ_400x400.jpg",
-        },
-        {
-          id: 5,
-          name: "Erick Doe",
-          status: "active",
-          image:
-            "https://pbs.twimg.com/profile_images/830082399308361730/nMCGQXS1_400x400.jpg",
-        },
-        {
-          id: 6,
-          name: "Francis Doe",
-          status: "active",
-          image:
-            "https://media.glassdoor.com/people/sqll/547888/stock-development-ceo1541641646409.png",
-        },
-        {
-          id: 8,
-          name: "Matilde Doe",
-          status: "active",
-          image:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS6HPnNzQuZypt_TKeaPlHGjj1WCBLTbAt98A&usqp=CAU",
-        },
-        {
-          id: 9,
-          name: "John Doe",
-          status: "active",
-          image:
-            "https://www.rd.com/wp-content/uploads/2017/09/01-shutterstock_476340928-Irina-Bg.jpg",
-        },
-        {
-          id: 10,
-          name: "Fermod Doe",
-          status: "active",
-          image:
-            "https://images.unsplash.com/photo-1518806118471-f28b20a1d79d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
-        },
-        {
-          id: 11,
-          name: "Danny Doe",
-          status: "active",
-          image:
-            "https://i.pinimg.com/originals/2e/2f/ac/2e2fac9d4a392456e511345021592dd2.jpg",
-        },
-      ],
       addEventModal: false,
       attendeesModal: false,
       event_end_date: "",
@@ -127,12 +55,15 @@ export default class EventScreen extends Component {
       eventDetailsModal: false,
       eventDetails: [],
       eventFriendList: [],
+      wishlist: [],
+      wishListModal: false,
+      giftData: [],
     };
     this.CreateEvent = this.CreateEvent.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.invite = this.invite.bind(this);
     this.remove_attendees = this.remove_attendees.bind(this);
-    // this.getEvents = this.getEvents.bind(this);
+    this.addGift = this.addGift.bind(this);
     this.dateChange = this.dateChange.bind(this);
     this.getListData = this.getListData.bind(this);
   }
@@ -148,10 +79,16 @@ export default class EventScreen extends Component {
         resolve(res);
       });
     });
-    Promise.all([promise1, promise2]).then((values) => {
+    const promise3 = new Promise((resolve, reject) => {
+      return getWishlist().then((res) => {
+        resolve(res);
+      });
+    });
+    Promise.all([promise1, promise2, promise3]).then((values) => {
       this.setState({
         eventFriendList: values[0],
         eventList: values[1],
+        wishlist: values[2],
         eventLoading: false,
       });
     });
@@ -160,12 +97,14 @@ export default class EventScreen extends Component {
     var event_title = this.state.event_title;
     var event_start_date = this.dateChange(this.state.event_start_date);
     var event_end_date = this.dateChange(this.state.event_end_date);
+    var wishlist = this.state.giftData;
     var attendees_invited = this.state.attendees_invited;
     CreateEvent(
       event_title,
       event_start_date,
       event_end_date,
-      attendees_invited
+      attendees_invited,
+      wishlist
     );
     this.setState({ addEventModal: false });
     this.getListData();
@@ -194,6 +133,13 @@ export default class EventScreen extends Component {
     }
     this.setState({
       attendees_invited: removeIndex,
+    });
+  }
+  addGift(val) {
+    this.setState({
+      giftData: new Array(val),
+      wishListModal: false,
+      addEventModal: true,
     });
   }
   dateChange(date) {
@@ -331,6 +277,34 @@ export default class EventScreen extends Component {
                     </View>
                   </CardItem>
                   <CardItem>
+                    <Text style={Formstyles.itemLabel}>EVENT GIFT</Text>
+                    <Text note>(Click to see the Gift)</Text>
+                  </CardItem>
+                  <ScrollView style={{ backgroundColor: "#fff" }}>
+                    <List>
+                      {this.state.eventDetails.event_wishlist === undefined ? (
+                        <Text></Text>
+                      ) : (
+                        this.state.eventDetails.event_wishlist.map(
+                          (val, key) => {
+                            return (
+                              <ListItem onPress={() => alert("Still Working")}>
+                                <Body>
+                                  <Text
+                                    style={{ fontSize: 15, fontWeight: "bold" }}
+                                  >
+                                    {val.item_name}
+                                  </Text>
+                                </Body>
+                                <Right></Right>
+                              </ListItem>
+                            );
+                          }
+                        )
+                      )}
+                    </List>
+                  </ScrollView>
+                  <CardItem>
                     <Text style={Formstyles.itemLabel}>All ATTENDEES</Text>
                   </CardItem>
                   <ScrollView style={{ backgroundColor: "#fff" }}>
@@ -353,7 +327,7 @@ export default class EventScreen extends Component {
                                   <Text
                                     style={{ fontSize: 15, fontWeight: "bold" }}
                                   >
-                                    {val.name}
+                                    {val.user_name}
                                   </Text>
                                 </Body>
                                 <Right></Right>
@@ -369,6 +343,7 @@ export default class EventScreen extends Component {
             </View>
           </View>
         </Content>
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       </Modal>
     );
   }
@@ -493,6 +468,70 @@ export default class EventScreen extends Component {
                     </View>
                   </CardItem>
                   <CardItem>
+                    <Text style={Formstyles.itemLabel}>SELECT/ADD GIFT</Text>
+                    <Right style={{ paddingLeft: 150 }}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.setState({
+                            wishListModal: true,
+                            addEventModal: false,
+                          })
+                        }
+                      >
+                        <Icon name="add" style={{ color: "#1c1c1c" }} />
+                      </TouchableOpacity>
+                    </Right>
+                  </CardItem>
+                  <ScrollView style={{ backgroundColor: "#fff" }}>
+                    <List>
+                      {this.state.giftData.length == 0 ? (
+                        <View
+                          style={{
+                            flex: 1,
+                            backgroundColor: "#fff",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexDirection: "row",
+                            paddingVertical: 20,
+                          }}
+                        >
+                          <Icon name="paper" style={{ color: "#1c1c1c" }} />
+                          <Text
+                            style={{ color: "#1c1c1c", paddingHorizontal: 10 }}
+                          >
+                            No Gift
+                          </Text>
+                        </View>
+                      ) : (
+                        this.state.giftData.map((val, key) => {
+                          return (
+                            <ListItem avatar>
+                              <Body style={{ flexDirection: "row" }}>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontWeight: "bold",
+                                    paddingVertical: 20,
+                                  }}
+                                >
+                                  {val.item_name}
+                                </Text>
+                                {/* <Right style={{ paddingHorizontal: 15 }}>
+                                  <TouchableOpacity
+                                    style={styles.AddButton}
+                                    onPress={() => this.remove_attendees(val)}
+                                  >
+                                    <Text style={styles.mblTxt}>Remove</Text>
+                                  </TouchableOpacity>
+                                </Right> */}
+                              </Body>
+                            </ListItem>
+                          );
+                        })
+                      )}
+                    </List>
+                  </ScrollView>
+                  <CardItem>
                     <Text style={Formstyles.itemLabel}>ADD ATTENDEES</Text>
                     <Right style={{ paddingLeft: 150 }}>
                       <TouchableOpacity
@@ -509,39 +548,59 @@ export default class EventScreen extends Component {
                   </CardItem>
                   <ScrollView style={{ backgroundColor: "#fff" }}>
                     <List>
-                      {this.state.attendees_invited.map((val, key) => {
-                        return (
-                          <ListItem avatar>
-                            <Left>
-                              <Thumbnail
-                                source={{
-                                  uri:
-                                    "https://norrismgmt.com/wp-content/uploads/2020/05/24-248253_user-profile-default-image-png-clipart-png-download.png",
-                                }}
-                              />
-                            </Left>
-                            <Body style={{ flexDirection: "row" }}>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  paddingVertical: 20,
-                                }}
-                              >
-                                {val.user_name}
-                              </Text>
-                              <Right style={{ paddingHorizontal: 15 }}>
-                                <TouchableOpacity
-                                  style={styles.AddButton}
-                                  onPress={() => this.remove_attendees(val)}
+                      {this.state.attendees_invited.length == 0 ? (
+                        <View
+                          style={{
+                            flex: 1,
+                            backgroundColor: "#fff",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexDirection: "row",
+                            paddingVertical: 20,
+                          }}
+                        >
+                          <Icon name="people" style={{ color: "#1c1c1c" }} />
+                          <Text
+                            style={{ color: "#1c1c1c", paddingHorizontal: 10 }}
+                          >
+                            No Attendees
+                          </Text>
+                        </View>
+                      ) : (
+                        this.state.attendees_invited.map((val, key) => {
+                          return (
+                            <ListItem avatar>
+                              <Left>
+                                <Thumbnail
+                                  source={{
+                                    uri:
+                                      "https://norrismgmt.com/wp-content/uploads/2020/05/24-248253_user-profile-default-image-png-clipart-png-download.png",
+                                  }}
+                                />
+                              </Left>
+                              <Body style={{ flexDirection: "row" }}>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontWeight: "bold",
+                                    paddingVertical: 20,
+                                  }}
                                 >
-                                  <Text style={styles.mblTxt}>Remove</Text>
-                                </TouchableOpacity>
-                              </Right>
-                            </Body>
-                          </ListItem>
-                        );
-                      })}
+                                  {val.user_name}
+                                </Text>
+                                <Right style={{ paddingHorizontal: 15 }}>
+                                  <TouchableOpacity
+                                    style={styles.AddButton}
+                                    onPress={() => this.remove_attendees(val)}
+                                  >
+                                    <Text style={styles.mblTxt}>Remove</Text>
+                                  </TouchableOpacity>
+                                </Right>
+                              </Body>
+                            </ListItem>
+                          );
+                        })
+                      )}
                     </List>
                   </ScrollView>
                 </Card>
@@ -619,6 +678,75 @@ export default class EventScreen extends Component {
                           <Text style={styles.mblTxt}>Invite</Text>
                         </TouchableOpacity>
                       </Right>
+                    </Body>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </ScrollView>
+        </Content>
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      </Modal>
+    );
+  }
+  renderWishList() {
+    return (
+      <Modal
+        animationType="slide"
+        visible={this.state.wishListModal}
+        title=""
+        onRequestClose={() => this.setState({ wishListModal: false })}
+      >
+        <Header
+          style={{
+            backgroundColor: "#fff",
+            borderBottomColor: "#dddfe2",
+            borderBottomWidth: 1,
+          }}
+        >
+          <Left>
+            <TouchableOpacity
+              onPress={() =>
+                this.setState({ wishListModal: false, addEventModal: true })
+              }
+            >
+              <Icon name="arrow-back" style={{ color: "#1c1c1c" }} />
+            </TouchableOpacity>
+          </Left>
+          <Body
+            style={{
+              paddingTop: 5,
+            }}
+          >
+            <Text style={{ fontWeight: "bold" }}>Add Gift</Text>
+          </Body>
+          <Right></Right>
+        </Header>
+
+        <Content>
+          <ScrollView style={{ backgroundColor: "#fff" }}>
+            <List>
+              {this.state.wishlist.map((val, key) => {
+                return (
+                  <ListItem onPress={() => this.addGift(val)}>
+                    <Body>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: "bold",
+                          paddingVertical: 20,
+                        }}
+                      >
+                        {val.item_name}
+                      </Text>
+                      {/* <Right style={{ paddingHorizontal: 15 }}>
+                        <TouchableOpacity
+                          style={styles.AddButton}
+                          onPress={() => this.invite(val)}
+                        >
+                          <Text style={styles.mblTxt}>Invite</Text>
+                        </TouchableOpacity>
+                      </Right> */}
                     </Body>
                   </ListItem>
                 );
@@ -723,7 +851,7 @@ export default class EventScreen extends Component {
               active={this.state.active}
               direction="up"
               containerStyle={{}}
-              style={{ backgroundColor: "#5067FF" }}
+              style={{ backgroundColor: "#aee4fc" }}
               position="bottomRight"
               onPress={() => this.setState({ addEventModal: true })}
             >
@@ -735,6 +863,7 @@ export default class EventScreen extends Component {
         {this.renderAddEventModal()}
         {this.renderAttendees()}
         {this.renderEventDetails()}
+        {this.renderWishList()}
         <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       </React.Fragment>
     );

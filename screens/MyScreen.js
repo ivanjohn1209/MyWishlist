@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import ScreenFooter from "../components/ScreenFooter";
 import ScreenHeader from "../components/ScreenHeader";
+import ScreenWebView from "../components/ScreenWebView";
 
 export default class MyScreen extends Component {
   constructor(props) {
@@ -21,58 +22,20 @@ export default class MyScreen extends Component {
     this.state = {
       data: [
         {
-          id: 1,
-          title: "Lorem ipsum dolor",
+          id: "1",
+          title: "Amazon",
           time: "1 days a go",
-          image: "https://via.placeholder.com/400x200/FFB6C1/000000",
+          image:
+            "https://images.livemint.com/img/2019/07/12/600x338/2019-07-05T065821Z_1_LYNXNPEF640GO_RTROPTP_3_AMAZON-COM-LIABILITY_1562582596221_1562903237045.JPG",
+          link: "https://www.amazon.com/",
         },
         {
-          id: 2,
-          title: "Sit amet, consectetuer",
-          time: "2 minutes a go",
-          image: "https://via.placeholder.com/400x200/48D1CC/000000",
-        },
-        {
-          id: 3,
-          title: "Dipiscing elit. Aenean ",
-          time: "3 hour a go",
-          image: "https://via.placeholder.com/400x200/AFEEEE/000000",
-        },
-        {
-          id: 4,
-          title: "Commodo ligula eget dolor.",
-          time: "4 months a go",
-          image: "https://via.placeholder.com/400x200/FFEFD5/000000",
-        },
-        {
-          id: 5,
-          title: "Aenean massa. Cum sociis",
-          time: "5 weeks a go",
-          image: "https://via.placeholder.com/400x200/FFC0CB/000000",
-        },
-        {
-          id: 6,
-          title: "Natoque penatibus et magnis",
-          time: "6 year a go",
-          image: "https://via.placeholder.com/400x200/DDA0DD/000000",
-        },
-        {
-          id: 7,
-          title: "Dis parturient montes, nascetur",
-          time: "7 minutes a go",
-          image: "https://via.placeholder.com/400x200/B0E0E6/000000",
-        },
-        {
-          id: 8,
-          title: "Ridiculus mus. Donec quam",
-          time: "8 days a go",
-          image: "https://via.placeholder.com/400x200/87CEEB/000000",
-        },
-        {
-          id: 9,
-          title: "Felis, ultricies nec, pellentesque",
-          time: "9 minutes a go",
-          image: "https://via.placeholder.com/400x200/4682B4/000000",
+          id: "2",
+          title: "Ebay",
+          time: "1 days a go",
+          image:
+            "https://www.logodesignlove.com/images/evolution/ebay-logo-01.jpg",
+          link: "https://www.ebay.com/",
         },
       ],
     };
@@ -95,7 +58,9 @@ export default class MyScreen extends Component {
             renderItem={(post) => {
               const item = post.item;
               return (
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate("Item", item)}
+                >
                   <View style={styles.card}>
                     <Image
                       style={styles.cardImage}
@@ -104,7 +69,6 @@ export default class MyScreen extends Component {
                     <View style={styles.cardContent}>
                       <View>
                         <Text style={styles.title}>{item.title}</Text>
-                        <Text style={styles.time}>{item.time}</Text>
                       </View>
                     </View>
                   </View>
@@ -178,7 +142,7 @@ const styles = StyleSheet.create({
   /******** card components **************/
   title: {
     fontSize: 22,
-    color: "#ffffff",
+    color: "#aee4fc",
     marginTop: 10,
     fontWeight: "bold",
   },
