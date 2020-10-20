@@ -17,10 +17,7 @@ import {
 import firebase from "firebase";
 import { Body, Header, Right } from "native-base";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-const backgroundImgscreen = {
-  uri:
-    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBw8PDRUNDQ8VFRUVFRUVFRUVFRUVFRUVFRUWFxUVFRUdHSggGB0lHRUVITEhJSktLi4uFx8/PT8sOigyNSsBCgoKDQ0NFQ0NFSsZHx0rKysrKysrLSsrKysrKysrKysrKy0rKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIARwAsQMBIgACEQEDEQH/xAAXAAEBAQEAAAAAAAAAAAAAAAAAAQIH/8QAFxABAQEBAAAAAAAAAAAAAAAAABHwQf/EABkBAQEBAAMAAAAAAAAAAAAAAAABAgMEBf/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwDp4o9B2qgoFQUCoKBUFAqCgVBUCgAtAAoChUACkACqKIxUFAqCgVBRSoKBUFAqCgVBQKgoFQUCoKBUFAqiiMVBQKgoFQUCoKBUFAqCgVBQKhFAqQigVAAoKBQURioKBUFAqCgVBQKgoFQUFqCgVBQKgoFQUCoLAKQiiOOkRQWpCKBUhFAqCgVBQKkFAqEUCoKBUIoFQUCpBQKoojjqAoVBQKgoq1BUCgAUACgoFQVAoKgUACgAVRRGEFAqCgVBQKgoFQUCoKBUFAqCgIKBUFAqCgUFEYqCgVBQKgoFQUFqCgVBQKgoFQVAoKBUFAqCgUAGKABQAAAAAKABQAKABQAKABQAKAAAIyAAAACoFBUUBRCoAAKAgqKUFEEFAqAqlQQGVEAUQBRAFEAUQBRAFEUARRQAAAQCgICKiiAKIAogCggKCAogCgACCCiAVRAFABBBWVEAUQBRAFEAUQBRAFEAUQBQAABQEAKgrK0QBRAFKgClQBRAFEAUQBRAFEAUQBRNwBCpRWVolBVKgiKJVFFZBFVAFGQVoQBRAFEAUQBagAgzSqy0M0oNDNKDQgCiUBRAFEAqiAKJQKogCiUoKJQGRFaQEUAEBQAAAAAAAAAAEFQAUQAABKURUWlACiCiiCC0RQAQFEAUQBRAFEAUQBRKCv/Z",
-};
+
 export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
@@ -223,7 +220,7 @@ export default class LoginScreen extends Component {
           </View>
         ) : (
           <ImageBackground
-            source={backgroundImgscreen}
+            source={require("../assets/img/background1.jpg")}
             style={styles.backgroundImg}
           >
             <Image
@@ -248,6 +245,22 @@ export default class LoginScreen extends Component {
                 onChangeText={(password) => this.setState({ password })}
               />
             </View>
+            <View style={{ flexDirection: "row" }}>
+              <Text>Forgot Password?</Text>
+              <TouchableOpacity
+                onPress={() => this.setState({ forgotPasswordModal: true })}
+              >
+                <Text
+                  style={{
+                    color: "#3676e1",
+                    fontWeight: "bold",
+                    paddingHorizontal: 5,
+                  }}
+                >
+                  Recover here
+                </Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
               style={[styles.buttonContainer, styles.loginButton]}
               onPress={() => this.handleLogin()}
@@ -258,19 +271,29 @@ export default class LoginScreen extends Component {
                 <Text style={styles.buttonText}>Login</Text>
               )}
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.setState({ forgotPasswordModal: true })}
-            >
-              <Text>Forgot Password?</Text>
-            </TouchableOpacity>
+
             <View style={styles.buttonSignup}>
+              <Text>Don't have account?</Text>
+              <TouchableOpacity onPress={() => this.ChangeScreen("Signup")}>
+                <Text
+                  style={{
+                    color: "#3676e1",
+                    fontWeight: "bold",
+                    paddingHorizontal: 5,
+                  }}
+                >
+                  Sign up
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {/* <View style={styles.buttonSignup}>
               <TouchableOpacity
                 style={styles.buttonContainer}
                 onPress={() => this.ChangeScreen("Signup")}
               >
                 <Text style={styles.buttonText}>CREATE NEW ACCOUNT</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </ImageBackground>
         )}
         {this.forgotPasswordModal()}
@@ -288,7 +311,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonText: {
-    color: "#4300af",
+    color: "#3676e1",
     fontWeight: "bold",
   },
   logo: {
@@ -310,8 +333,8 @@ const styles = StyleSheet.create({
   },
 
   buttonSignup: {
-    paddingTop: 650,
-    position: "absolute",
+    paddingVertical: 30,
+    flexDirection: "row",
   },
   inputContainer: {
     borderBottomColor: "#dddfe2",
@@ -343,11 +366,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     width: 250,
-    backgroundColor: "#4300af12",
+    backgroundColor: "#aee4fc",
     borderRadius: 5,
+    marginTop: 10,
   },
   loginButton: {
-    backgroundColor: "#4300af12",
+    backgroundColor: "#aee4fc",
   },
 });
 const forgotpasswordStyle = StyleSheet.create({

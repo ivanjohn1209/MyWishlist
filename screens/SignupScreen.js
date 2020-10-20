@@ -1,14 +1,3 @@
-// import React, { Component } from 'react'
-
-// export default class SignupScreen extends Component {
-//     render() {
-//         return (
-//             <div>
-
-//             </div>
-//         )
-//     }
-// }
 import React, { Component } from "react";
 import {
   StyleSheet,
@@ -20,10 +9,6 @@ import {
   Image,
   Alert,
 } from "react-native";
-// import SignupHeader from "../components/SignupHeader";
-import firebase from "firebase";
-import { TouchableOpacity } from "react-native-gesture-handler";
-
 export default class SignupScreen extends Component {
   constructor(props) {
     super(props);
@@ -34,35 +19,6 @@ export default class SignupScreen extends Component {
     this.ChangeScreen = this.ChangeScreen.bind(this);
   }
 
-  onClickListener = (viewId) => {
-    // var firebaseConfig = {
-    //   apiKey: "AIzaSyCaR_jm_RGy7WJrXxkSKu3NDNj3hDdz0Ro",
-    //   authDomain: "my-wishlist-ec34f.firebaseapp.com",
-    //   databaseURL: "https://my-wishlist-ec34f.firebaseio.com",
-    //   projectId: "my-wishlist-ec34f",
-    //   storageBucket: "my-wishlist-ec34f.appspot.com",
-    //   messagingSenderId: "787163673588",
-    //   appId: "1:787163673588:web:8e28eddcd03dd784f7bfa1",
-    //   measurementId: "G-PDFYNLRDL8",
-    // };
-    // if (!firebase.apps.length) {
-    //   firebase.initializeApp(firebaseConfig);
-    // }
-    // var provider = new firebase.auth.GoogleAuthProvider();
-    // provider.addScope("profile");
-    // provider.addScope("https://www.googleapis.com/auth/drive");
-    // firebase.auth().signInWithRedirect(provider);
-    // //add the code below to your previous lines
-    // firebase
-    //   .auth()
-    //   .getRedirectResult()
-    //   .then(function (authData) {
-    //     console.log(authData);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
-  };
   ChangeScreen(e) {
     this.props.navigation.navigate(e);
   }
@@ -70,8 +26,6 @@ export default class SignupScreen extends Component {
   render() {
     return (
       <View style={styles.screenContainer}>
-        {/* <SignupHeader /> */}
-
         <View style={styles.container}>
           <Image
             style={styles.logo}

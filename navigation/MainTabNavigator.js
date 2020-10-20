@@ -4,6 +4,7 @@ import EventScreen from "../screens/EventScreen";
 import FamilyScreen from "../screens/FamilyScreen";
 import FriendScreen from "../screens/FriendScreen";
 import MyScreen from "../screens/MyScreen";
+import NotificationScreen from "../screens/NotificationScreen";
 import SettingScreen from "../screens/SettingScreen";
 
 const config = Platform.select({
@@ -18,6 +19,7 @@ const MainNavigator = createStackNavigator(
     Friend: FriendScreen,
     Event: EventScreen,
     Setting: SettingScreen,
+    Notification: NotificationScreen,
   },
   config
 );

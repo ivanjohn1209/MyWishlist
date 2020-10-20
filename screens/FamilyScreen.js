@@ -109,15 +109,16 @@ export default class FamilyScreen extends Component {
             // doc.data() is never undefined for query doc snapshots
             items.push(doc.data());
           });
+          const newArr = [];
+
           items.map((val, key1) => {
             if (val.user_uid !== user.uid) {
-              const items = [val];
-
-              this.setState({
-                allUser: items,
-                usersLoading: false,
-              });
+              newArr.push(val);
             }
+          });
+          this.setState({
+            allUser: newArr,
+            usersLoading: false,
           });
         });
     }
@@ -252,9 +253,6 @@ export default class FamilyScreen extends Component {
                               <TouchableOpacity style={styles.AddButton}>
                                 <Text style={styles.mblTxt}>Invite</Text>
                               </TouchableOpacity>
-                            </View>
-                            <View style={styles.msgContainer}>
-                              <Text style={styles.msgTxt}>Birthday</Text>
                             </View>
                           </View>
                         </View>

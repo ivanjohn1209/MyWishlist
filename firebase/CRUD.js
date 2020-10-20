@@ -1,14 +1,3 @@
-// import
-// var user = firebase.auth().currentUser;
-
-// user.updateProfile({
-//   displayName: "Jane Q. User",
-//   photoURL: "https://example.com/jane-q-user/profile.jpg"
-// }).then(function() {
-//   // Update successful.
-// }).catch(function(error) {
-//   // An error happened.
-// });
 import * as firebase from "firebase";
 import "firebase/firestore";
 
@@ -19,8 +8,13 @@ export {
   GetUsers,
   CreateEvent,
   addFriend,
-  //   CreateUserinDatabase,
+  getFriendReq,
+  acceptFriend,
+  getFriend,
+  getEvents,
+  GetNotFriendUsers,
 };
+
 function CreateUser(email, password) {
   return firebase
     .auth()
@@ -52,15 +46,48 @@ function GetUserData() {
 function GetUsers() {
   var db = firebase.firestore();
   var user = firebase.auth().currentUser;
+
   if (user != null) {
+    const users = [];
     return db
       .collection("users")
       .get()
-      .then(function (querySnapshot) {
+      .then((querySnapshot) => {
         querySnapshot.forEach(function (doc) {
-          // doc.data() is never undefined for query doc snapshots
-          return doc.data();
+          users.push(doc.data());
         });
+        const newArr = [];
+
+        users.map((val, key1) => {
+          if (val.user_uid !== user.uid) {
+            newArr.push(val);
+          }
+        });
+        return newArr;
+      });
+  }
+}
+function GetNotFriendUsers() {
+  var db = firebase.firestore();
+  var user = firebase.auth().currentUser;
+
+  if (user != null) {
+    const users = [];
+    return db
+      .collection("users")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach(function (doc) {
+          users.push(doc.data());
+        });
+        const newArr = [];
+
+        users.map((val, key1) => {
+          if (val.user_uid !== user.uid) {
+            newArr.push(val);
+          }
+        });
+        return newArr;
       });
   }
 }
@@ -68,18 +95,23 @@ function addFriend(val) {
   var db = firebase.firestore();
   var user = firebase.auth().currentUser;
   if (user != null) {
-    var data = {
-      ...val,
-      friend: false,
-    };
-    var db = firebase.firestore();
     db.collection("users")
       .doc(user.uid)
-      .collection("friendRequest")
-      .add(data)
-      .then(function (res) {})
-      .catch(function (error) {
-        alert(error);
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          var userData = doc.data();
+          db.collection("users")
+            .doc(val.user_uid)
+            .collection("request")
+            .doc(user.uid)
+            .set({
+              ...userData,
+              friend: false,
+            });
+        } else {
+          console.log("No such document!");
+        }
       });
   }
 }
@@ -114,6 +146,96 @@ function CreateEvent(
         } else {
           console.log("No such document!");
         }
+      });
+  }
+}
+function getFriendReq() {
+  var db = firebase.firestore();
+  var user = firebase.auth().currentUser;
+  if (user != null) {
+    const request = [];
+    return db
+      .collection("users")
+      .doc(user.uid)
+      .collection("request")
+      .get()
+      .then((data) => {
+        data.forEach((doc) => {
+          request.push(doc.data());
+        });
+        return request;
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  }
+}
+function acceptFriend(val) {
+  var db = firebase.firestore();
+  var user = firebase.auth().currentUser;
+  if (user != null) {
+    db.collection("users")
+      .doc(user.uid)
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          var userData = doc.data();
+          db.collection("users")
+            .doc(val.user_uid)
+            .collection("friends")
+            .doc(user.uid)
+            .set({
+              ...userData,
+              friend: true,
+            });
+          db.collection("users")
+            .doc(user.uid)
+            .collection("friends")
+            .doc(val.user_uid)
+            .set({
+              ...val,
+              friend: true,
+            });
+        } else {
+          console.log("No such document!");
+        }
+      });
+  }
+}
+function getFriend() {
+  var db = firebase.firestore();
+  var user = firebase.auth().currentUser;
+  if (user != null) {
+    const friends = [];
+    return db
+      .collection("users")
+      .doc(user.uid)
+      .collection("friends")
+      .get()
+      .then((data) => {
+        data.forEach((doc) => {
+          friends.push(doc.data());
+        });
+        return friends;
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  }
+}
+function getEvents() {
+  var db = firebase.firestore();
+  var user = firebase.auth().currentUser;
+  if (user != null) {
+    const events = [];
+    return db
+      .collection("events")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach(function (doc) {
+          events.push(doc.data());
+        });
+        return events;
       });
   }
 }

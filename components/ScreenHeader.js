@@ -25,10 +25,10 @@ export default class ScreenHeader extends Component {
           <Image style={styles.logo} source={require("../assets/logo2.png")} />
         </Body>
         <Right>
-          <Button transparent onPress={() => this.ChangeScreen("Search")}>
+          {/* <Button transparent onPress={() => this.ChangeScreen("Search")}>
             <Icon name="search" style={{ color: "#1c1c1c" }} />
-          </Button>
-          <Button transparent onPress={() => this.ChangeScreen("ChatList")}>
+          </Button> */}
+          <Button transparent onPress={() => this.ChangeScreen("Notification")}>
             <Icon name="notifications" style={{ color: "#1c1c1c" }} />
           </Button>
         </Right>

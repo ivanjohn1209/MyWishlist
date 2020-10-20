@@ -137,49 +137,51 @@ export default class SignupForm extends Component {
           </Body>
           <Right></Right>
         </Header>
+        <ScrollView>
+          <View style={styles.formContainer}>
+            <Text style={styles.nameTittle}>What's your Detail?</Text>
+            <View style={styles.formInputContainer}>
+              <Text style={styles.itemLabel}>Full Name*</Text>
 
-        <View style={styles.formContainer}>
-          <Text style={styles.nameTittle}>What's your Detail?</Text>
-          <View style={styles.formInputContainer}>
-            <Text style={styles.itemLabel}>Full Name*</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  // defaultValue={newUser.first_name}
+                  style={styles.inputs}
+                  placeholder="Full Name*"
+                  // keyboardType="email-address"
+                  underlineColorAndroid="transparent"
+                  onChangeText={(e) => this.handleChange(e, "username")}
+                />
+              </View>
+              <Text style={styles.itemLabel}>Select Birthday*</Text>
 
-            <View style={styles.inputContainer}>
-              <TextInput
-                // defaultValue={newUser.first_name}
-                style={styles.inputs}
-                placeholder="Full Name*"
-                // keyboardType="email-address"
-                underlineColorAndroid="transparent"
-                onChangeText={(e) => this.handleChange(e, "username")}
-              />
+              <View style={styles.inputContainer}>
+                <DatePicker
+                  style={{ width: 200 }}
+                  mode="date"
+                  date=""
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  onDateChange={(e) => this.handleChange(e, "birthday")}
+                />
+              </View>
             </View>
-            <Text style={styles.itemLabel}>Select Birthday*</Text>
 
-            <View style={styles.inputContainer}>
-              <DatePicker
-                style={{ width: 200 }}
-                mode="date"
-                date=""
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                onDateChange={(e) => this.handleChange(e, "birthday")}
-              />
-            </View>
-          </View>
-
-          <TouchableHighlight
-            style={[styles.buttonContainer, styles.loginButton]}
-            onPress={() => this.setState({ renderEmailPassForm: true })}
-          >
-            <Text style={styles.loginText}>Next</Text>
-          </TouchableHighlight>
-          {/* <TouchableHighlight
+            <TouchableHighlight
+              style={[styles.buttonContainer, styles.loginButton]}
+              onPress={() => this.setState({ renderEmailPassForm: true })}
+            >
+              <Text style={styles.loginText}>Next</Text>
+            </TouchableHighlight>
+            {/* <TouchableHighlight
             style={[styles.buttonContainer, styles.loginButton]}
             onPress={() => this.signInGoogle()}
           >
             <Text style={styles.loginText}>Sign-in With Google</Text>
           </TouchableHighlight> */}
-        </View>
+          </View>
+        </ScrollView>
+
         {this.renderEmailPassForm()}
         <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       </View>

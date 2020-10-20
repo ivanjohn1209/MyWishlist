@@ -39,7 +39,7 @@ import { YellowBox } from "react-native";
 YellowBox.ignoreWarnings(["Setting a timer"]);
 import * as firebase from "firebase";
 import "firebase/firestore";
-
+import { getFriend, getEvents } from "../firebase/CRUD";
 export default class EventScreen extends Component {
   constructor(props) {
     super(props);
@@ -126,13 +126,35 @@ export default class EventScreen extends Component {
       eventLoading: true,
       eventDetailsModal: false,
       eventDetails: [],
+      eventFriendList: [],
     };
     this.CreateEvent = this.CreateEvent.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.invite = this.invite.bind(this);
     this.remove_attendees = this.remove_attendees.bind(this);
-    this.getEvents = this.getEvents.bind(this);
+    // this.getEvents = this.getEvents.bind(this);
     this.dateChange = this.dateChange.bind(this);
+    this.getListData = this.getListData.bind(this);
+  }
+  getListData() {
+    const promise1 = new Promise((resolve, reject) => {
+      return getFriend().then((res) => {
+        resolve(res);
+      });
+    });
+
+    const promise2 = new Promise((resolve, reject) => {
+      return getEvents().then((res) => {
+        resolve(res);
+      });
+    });
+    Promise.all([promise1, promise2]).then((values) => {
+      this.setState({
+        eventFriendList: values[0],
+        eventList: values[1],
+        eventLoading: false,
+      });
+    });
   }
   CreateEvent() {
     var event_title = this.state.event_title;
@@ -146,7 +168,7 @@ export default class EventScreen extends Component {
       attendees_invited
     );
     this.setState({ addEventModal: false });
-    this.getEvents();
+    this.getListData();
   }
   handleChange(e, name) {
     this.setState({
@@ -182,30 +204,30 @@ export default class EventScreen extends Component {
 
     return year + "-" + month + "-" + day;
   }
-  getEvents() {
-    var db = firebase.firestore();
-    var user = firebase.auth().currentUser;
+  // getEvents() {
+  //   var db = firebase.firestore();
+  //   var user = firebase.auth().currentUser;
 
-    if (user != null) {
-      const items = [];
-      db.collection("events")
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach(function (doc) {
-            items.push(doc.data());
-          });
-          this.setState({
-            eventList: items,
-            eventLoading: false,
-          });
-        });
-    }
-  }
+  //   if (user != null) {
+  //     const items = [];
+  //     db.collection("events")
+  //       .get()
+  //       .then((querySnapshot) => {
+  //         querySnapshot.forEach(function (doc) {
+  //           items.push(doc.data());
+  //         });
+  //         this.setState({
+  //           eventList: items,
+  //           eventLoading: false,
+  //         });
+  //       });
+  //   }
+  // }
 
   componentDidMount() {
     const { navigation } = this.props;
     navigation.addListener("willFocus", () => {
-      this.getEvents();
+      this.getListData();
     });
   }
   renderEventDetails() {
@@ -389,7 +411,7 @@ export default class EventScreen extends Component {
           </Body>
           <Right>
             <TouchableOpacity onPress={() => this.CreateEvent()}>
-              <Text style={{ fontWeight: "bold" }}>Save</Text>
+              <Text style={{ fontWeight: "bold" }}>Add</Text>
             </TouchableOpacity>
           </Right>
         </Header>
@@ -493,22 +515,30 @@ export default class EventScreen extends Component {
                             <Left>
                               <Thumbnail
                                 source={{
-                                  uri: val.image,
+                                  uri:
+                                    "https://norrismgmt.com/wp-content/uploads/2020/05/24-248253_user-profile-default-image-png-clipart-png-download.png",
                                 }}
                               />
                             </Left>
-                            <Body>
-                              <Text>{val.name}</Text>
-                              <Text note>always keep you happy . .</Text>
-                            </Body>
-                            <Right>
-                              <TouchableOpacity
-                                style={styles.AddButton}
-                                onPress={() => this.remove_attendees(val)}
+                            <Body style={{ flexDirection: "row" }}>
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontWeight: "bold",
+                                  paddingVertical: 20,
+                                }}
                               >
-                                <Text style={styles.mblTxt}>Remove</Text>
-                              </TouchableOpacity>
-                            </Right>
+                                {val.user_name}
+                              </Text>
+                              <Right style={{ paddingHorizontal: 15 }}>
+                                <TouchableOpacity
+                                  style={styles.AddButton}
+                                  onPress={() => this.remove_attendees(val)}
+                                >
+                                  <Text style={styles.mblTxt}>Remove</Text>
+                                </TouchableOpacity>
+                              </Right>
+                            </Body>
                           </ListItem>
                         );
                       })}
@@ -560,27 +590,36 @@ export default class EventScreen extends Component {
         <Content>
           <ScrollView style={{ backgroundColor: "#fff" }}>
             <List>
-              {this.state.calls.map((val, key) => {
+              {this.state.eventFriendList.map((val, key) => {
                 return (
                   <ListItem avatar>
                     <Left>
                       <Thumbnail
                         source={{
-                          uri: val.image,
+                          uri:
+                            "https://norrismgmt.com/wp-content/uploads/2020/05/24-248253_user-profile-default-image-png-clipart-png-download.png",
                         }}
                       />
                     </Left>
-                    <Body>
-                      <Text>{val.name}</Text>
-                    </Body>
-                    <Right>
-                      <TouchableOpacity
-                        style={styles.AddButton}
-                        onPress={() => this.invite(val)}
+                    <Body style={{ flexDirection: "row" }}>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: "bold",
+                          paddingVertical: 20,
+                        }}
                       >
-                        <Text style={styles.mblTxt}>Invite</Text>
-                      </TouchableOpacity>
-                    </Right>
+                        {val.user_name}
+                      </Text>
+                      <Right style={{ paddingHorizontal: 15 }}>
+                        <TouchableOpacity
+                          style={styles.AddButton}
+                          onPress={() => this.invite(val)}
+                        >
+                          <Text style={styles.mblTxt}>Invite</Text>
+                        </TouchableOpacity>
+                      </Right>
+                    </Body>
                   </ListItem>
                 );
               })}
@@ -609,6 +648,22 @@ export default class EventScreen extends Component {
                 }}
               >
                 <ActivityIndicator size="large" color="#aee4fc" />
+              </View>
+            ) : this.state.eventList.length === 0 ? (
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: "#fff",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  paddingVertical: 40,
+                }}
+              >
+                <Icon name="calendar" style={{ color: "#1c1c1c" }} />
+                <Text style={{ color: "#1c1c1c", paddingHorizontal: 10 }}>
+                  No Events
+                </Text>
               </View>
             ) : (
               <ScrollView>
@@ -656,23 +711,6 @@ export default class EventScreen extends Component {
                             style={{ height: 200, width: null, flex: 1 }}
                           />
                         </CardItem>
-                        {/* <CardItem>
-                        <Left>
-                          <Button transparent>
-                            <Icon active name="thumbs-up" />
-                            <Text>12 Likes</Text>
-                          </Button>
-                        </Left>
-                        <Body>
-                          <Button transparent>
-                            <Icon active name="chatbubbles" />
-                            <Text>4 Comments</Text>
-                          </Button>
-                        </Body>
-                        <Right>
-                          <Text>11h ago</Text>
-                        </Right>
-                      </CardItem> */}
                       </Card>
                     </TouchableOpacity>
                   );
@@ -776,7 +814,6 @@ const Formstyles = StyleSheet.create({
     alignItems: "center",
   },
   formContainer: {
-    // alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 10,
   },

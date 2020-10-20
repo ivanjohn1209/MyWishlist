@@ -27,9 +27,7 @@ import { View } from "native-base";
 import firebase from "firebase";
 import { firebaseConfig } from "./firebase/firebase";
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+firebase.initializeApp(firebaseConfig);
 
 export default class App extends React.Component {
   constructor(props) {

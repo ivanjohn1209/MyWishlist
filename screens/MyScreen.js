@@ -1,27 +1,4 @@
 import { Container } from "native-base";
-// import { Container, Content } from "native-base";
-// import React, { Component } from "react";
-// import { View, Text, StyleSheet } from "react-native";
-// import ScreenFooter from "../components/ScreenFooter";
-
-// export default class MyScreen extends Component {
-//   render() {
-//     return (
-//       <Container>
-//         <Content></Content>
-//         <ScreenFooter navigation={this.props.navigation} />
-//       </Container>
-//     );
-//   }
-// }
-// MyScreen.navigationOptions = {
-//   headerShown: false,
-// };
-// const styles = StyleSheet.create({
-//   container: {
-//     backgroundColor: "#fff",
-//   },
-// });
 import React, { Component } from "react";
 import {
   StyleSheet,

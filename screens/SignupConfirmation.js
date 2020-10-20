@@ -55,7 +55,6 @@ export default class SignupConfirmation extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {/* <SignupHeader /> */}
         <View style={styles.formContainer}>
           <Text style={styles.nameTittle}>Verify your Account</Text>
           <View style={styles.formInputContainer}>
@@ -67,7 +66,6 @@ export default class SignupConfirmation extends Component {
               }}
             />
           </View>
-
           <TouchableHighlight
             style={[styles.buttonContainer, styles.loginButton]}
             onPress={() => this.CreateAccount()}
